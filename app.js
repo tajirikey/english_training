@@ -25,10 +25,9 @@ function bind(id) { return document.getElementById(id); }
 [
   "startScreen", "quizScreen", "endScreen",
   "modeSeg", "answerSeg", "lengthSelect",
-  "questionCountBadge", "overallBadge",
   "startBtn", "resetHistoryBtn",
   "progressText", "progressBar", "timerText",
-  "catTag", "jpText", "firstWord", "answerInput", "blankBox", "tailText", "sentenceLabel",
+  "jpText", "firstWord", "answerInput", "blankBox", "tailText",
   "hintLine", "revealBox", "revealBtn", "choiceGrid",
   "checkBtn", "hintBtn", "skipBtn", "nextBtn", "quitBtn", "feedback",
   "statScore", "statWrong", "statStreak", "statAvg",
@@ -87,10 +86,7 @@ function questionsForMode(mode) {
   return source;
 }
 
-function updateQuestionCount() {
-  const count = questionsForMode(state.mode).length;
-  els.questionCountBadge.textContent = `${count}問`;
-}
+function updateQuestionCount() { /* バッジ廃止のため何もしない */ }
 
 function buildPool(fixedPool) {
   let source = fixedPool ? [...fixedPool] : questionsForMode(state.mode);
@@ -169,7 +165,6 @@ function renderQuestion() {
   els.progressText.textContent = `${state.index + 1} / ${state.pool.length}`;
   els.progressBar.style.width = `${(state.index / state.pool.length) * 100}%`;
   els.timerText.textContent = "0.0秒";
-  els.catTag.textContent = `${q.cat === "daily" ? "日常" : "ビジネス"} / ${q.sub || ""}`;
   els.jpText.textContent = q.jp;
   els.firstWord.textContent = q.subject;
   els.tailText.textContent = q.tail;
@@ -181,7 +176,6 @@ function renderQuestion() {
   els.skipBtn.disabled = false;
 
   if (state.answerMethod === "typing") {
-    els.sentenceLabel.textContent = "英文：動詞（句）を入力";
     els.answerInput.classList.remove("hidden");
     els.answerInput.value = "";
     els.answerInput.className = "verb-input";
@@ -193,7 +187,6 @@ function renderQuestion() {
     els.hintBtn.classList.remove("hidden");
     setTimeout(() => els.answerInput.focus(), 30);
   } else {
-    els.sentenceLabel.textContent = "英文：動詞（句）を選ぶ";
     els.answerInput.classList.add("hidden");
     els.blankBox.classList.remove("hidden");
     els.blankBox.textContent = "？";
@@ -384,7 +377,6 @@ function updateOverallStats() {
   els.ovRate.textContent = `${rate}%`;
   els.ovMiss.textContent = missCount;
   els.ovBest.textContent = o.bestStreak || 0;
-  els.overallBadge.textContent = `通算 ${o.total}問`;
 }
 
 function renderMisses() {

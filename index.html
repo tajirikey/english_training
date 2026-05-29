@@ -136,6 +136,8 @@
       min-width: 130px;
     }
 
+    .quiz-top { display: flex; justify-content: flex-end; margin-bottom: 14px; }
+    .quiz-top button { padding: 7px 14px; font-size: 13px; }
     .progress-wrap { display: grid; gap: 8px; margin-bottom: 24px; }
     .progress-meta { display: flex; justify-content: space-between; color: var(--muted); font-size: 13px; }
     .bar { height: 10px; background: var(--panel2); border-radius: 999px; overflow: hidden; }
@@ -267,9 +269,7 @@
     <header>
       <div class="title-row">
         <h1>英語動詞クイズ</h1>
-        <div class="pill">日常英会話 + 軽めのビジネス</div>
       </div>
-      <p class="subtitle">日本語の状況を見て、英文の中に入る「動詞（句）」を答えます。タイピングと選択肢の2モード。成績はブラウザに自動保存されます。</p>
     </header>
 
     <div class="layout">
@@ -300,41 +300,19 @@
                 <option value="all">全問</option>
               </select>
 
-              <div class="badge-row">
-                <span class="badge" id="questionCountBadge">0問</span>
-                <span class="badge">成績を自動保存</span>
-                <span class="badge" id="overallBadge">通算 0問</span>
-              </div>
-            </div>
-
-            <div class="start-grid">
-              <div class="option">
-                <h3>動詞（句）を答える</h3>
-                <p>主語と続きの文は表示。間に入る動詞・動詞句だけを答えます。</p>
-              </div>
-              <div class="option">
-                <h3>選択モードはワンクッション</h3>
-                <p>まず頭の中で答えを思い浮かべ、ボタンを押してから4択を表示します。</p>
-              </div>
-              <div class="option">
-                <h3>苦手だけ復習</h3>
-                <p>間違えた問題だけを集中的に練習できます。</p>
-              </div>
-              <div class="option">
-                <h3>正解後に全文確認</h3>
-                <p>自然な英文全体と短い解説も一緒に確認できます。</p>
-              </div>
             </div>
 
             <div class="actions">
               <button id="startBtn" class="primary" type="button">開始</button>
               <button id="resetHistoryBtn" class="danger" type="button">成績をリセット</button>
             </div>
-            <p class="small">迷ったら「ミックス・入力する・20問」がおすすめです。</p>
           </section>
 
           <!-- ===== Quiz ===== -->
           <section id="quizScreen" class="hidden">
+            <div class="quiz-top">
+              <button id="quitBtn" class="ghost" type="button">終了</button>
+            </div>
             <div class="progress-wrap">
               <div class="progress-meta">
                 <span id="progressText">1 / 20</span>
@@ -343,12 +321,9 @@
               <div class="bar"><span id="progressBar"></span></div>
             </div>
 
-            <span id="catTag" class="cat-tag"></span>
-            <div class="prompt-label">日本語</div>
             <p id="jpText" class="jp"></p>
 
             <div class="sentence">
-              <div class="prompt-label" id="sentenceLabel">英文：動詞（句）を答える</div>
               <div class="sentence-preview">
                 <span id="firstWord" class="first-word"></span>
                 <!-- typing -->
@@ -373,7 +348,6 @@
               <button id="hintBtn" class="ghost" type="button">ヒント</button>
               <button id="skipBtn" class="ghost" type="button">スキップ</button>
               <button id="nextBtn" class="primary hidden" type="button">次へ</button>
-              <button id="quitBtn" class="ghost" type="button">終了</button>
             </div>
 
             <div id="feedback" class="feedback"></div>
