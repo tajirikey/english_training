@@ -129,6 +129,7 @@ function show(section) {
   els.startScreen.classList.toggle("hidden", section !== "start");
   els.quizScreen.classList.toggle("hidden", section !== "quiz");
   els.endScreen.classList.toggle("hidden", section !== "end");
+  els.quitBtn.classList.toggle("hidden", section !== "quiz");
 }
 
 /* ---------- session ---------- */
@@ -263,7 +264,11 @@ function finishUI(ok, forceSkip, typedLabel, q) {
   const type = forceSkip ? "warn" : (ok ? "good" : "bad");
   const line = ok ? `答え：${q.answer}` : `${typedLabel} / 正解：${q.answer}`;
   renderFeedback(type, head, line, q);
-  setTimeout(() => els.nextBtn.focus(), 10);
+  // 回答後に「次へ」を画面内へスクロールし、ブラウザ下部バーに隠れないようにする
+  setTimeout(() => {
+    els.nextBtn.focus({ preventScroll: true });
+    els.nextBtn.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, 10);
 }
 
 // typing判定

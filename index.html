@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>英語動詞クイズ</title>
   <style>
     :root {
@@ -47,7 +47,7 @@
 
     .title-row {
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       justify-content: space-between;
       gap: 16px;
       flex-wrap: wrap;
@@ -60,20 +60,7 @@
       margin: 0;
     }
 
-    .subtitle { color: var(--muted); margin: 0; max-width: 720px; font-size: 15px; }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, .78);
-      color: var(--muted);
-      font-size: 13px;
-      white-space: nowrap;
-    }
+    .title-row #quitBtn { padding: 7px 14px; font-size: 13px; }
 
     .layout {
       display: grid;
@@ -92,14 +79,6 @@
 
     .main-card { min-height: 560px; }
     .card-inner { padding: clamp(18px, 4vw, 34px); }
-
-    .toolbar {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-      margin-bottom: 14px;
-    }
 
     button, select, input { font: inherit; }
 
@@ -136,15 +115,15 @@
       min-width: 130px;
     }
 
-    .quiz-top { display: flex; justify-content: flex-end; margin-bottom: 14px; }
-    .quiz-top button { padding: 7px 14px; font-size: 13px; }
+    /* 回答後の「次へ」がブラウザ下部バーに隠れないよう十分なスクロール余地を確保 */
+    #quizScreen { padding-bottom: calc(30vh + env(safe-area-inset-bottom)); }
+
     .progress-wrap { display: grid; gap: 8px; margin-bottom: 24px; }
     .progress-meta { display: flex; justify-content: space-between; color: var(--muted); font-size: 13px; }
     .bar { height: 10px; background: var(--panel2); border-radius: 999px; overflow: hidden; }
     .bar span { display: block; height: 100%; width: 0%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), #748ffc); transition: width .25s ease; }
 
     .prompt-label { color: var(--muted); font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-    .cat-tag { display: inline-block; font-size: 11px; font-weight: 800; color: var(--accent); background: var(--accent2); border-radius: 999px; padding: 3px 9px; margin-bottom: 10px; }
 
     .jp {
       font-size: clamp(22px, 4vw, 36px);
@@ -237,18 +216,11 @@
     .miss-item span { color: var(--muted); }
 
     .start-screen, .end-screen { display: grid; gap: 16px; }
-    .start-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .option { padding: 16px; border: 1px solid var(--line); border-radius: 18px; background: #f8f9fd; }
-    .option h3 { margin: 0 0 4px; font-size: 16px; }
-    .option p { margin: 0; color: var(--muted); font-size: 13px; }
 
     .small { font-size: 13px; color: var(--muted); }
     .hidden { display: none !important; }
 
     .kbd { padding: 2px 7px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 6px; background: white; font-size: 12px; color: var(--muted); font-weight: 700; }
-
-    .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-    .badge { border-radius: 999px; padding: 5px 9px; background: var(--accent2); color: var(--accent); font-size: 12px; font-weight: 800; }
 
     @media (max-width: 860px) {
       .layout { grid-template-columns: 1fr; }
@@ -257,7 +229,6 @@
     }
     @media (max-width: 560px) {
       .app { width: min(100% - 18px, 1040px); padding-top: 18px; }
-      .start-grid { grid-template-columns: 1fr; }
       .stats { grid-template-columns: 1fr 1fr; }
       .choice-grid { grid-template-columns: 1fr; }
       .verb-input { width: 100%; }
@@ -269,6 +240,7 @@
     <header>
       <div class="title-row">
         <h1>英語動詞クイズ</h1>
+        <button id="quitBtn" class="ghost hidden" type="button">終了</button>
       </div>
     </header>
 
@@ -299,7 +271,6 @@
                 <option value="30">30問</option>
                 <option value="all">全問</option>
               </select>
-
             </div>
 
             <div class="actions">
@@ -310,9 +281,6 @@
 
           <!-- ===== Quiz ===== -->
           <section id="quizScreen" class="hidden">
-            <div class="quiz-top">
-              <button id="quitBtn" class="ghost" type="button">終了</button>
-            </div>
             <div class="progress-wrap">
               <div class="progress-meta">
                 <span id="progressText">1 / 20</span>
@@ -326,20 +294,16 @@
             <div class="sentence">
               <div class="sentence-preview">
                 <span id="firstWord" class="first-word"></span>
-                <!-- typing -->
                 <input id="answerInput" class="verb-input" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="動詞句" />
-                <!-- choice blank -->
                 <span id="blankBox" class="blank-box hidden">？</span>
                 <span id="tailText" class="tail"></span>
               </div>
               <div id="hintLine" class="hint-line">ヒントは必要なときだけ表示できます。</div>
 
-              <!-- choice: reveal step (ワンクッション) -->
               <div id="revealBox" class="reveal-box hidden">
                 <p>まず頭の中で答えを思い浮かべてから、選択肢を表示しましょう。</p>
                 <button id="revealBtn" class="primary" type="button">選択肢を見る</button>
               </div>
-              <!-- choice: options -->
               <div id="choiceGrid" class="choice-grid hidden"></div>
             </div>
 
@@ -358,7 +322,7 @@
             <div>
               <div class="prompt-label">結果</div>
               <p id="endTitle" class="jp"></p>
-              <p id="endSummary" class="subtitle"></p>
+              <p id="endSummary" class="small"></p>
             </div>
             <div class="actions">
               <button id="retryMissesBtn" class="primary" type="button">間違えた問題だけ</button>
@@ -399,13 +363,6 @@
             <div id="missList" class="list">
               <p class="small">ミスした問題がここに出ます。</p>
             </div>
-          </div>
-        </section>
-
-        <section class="card">
-          <div class="card-inner">
-            <div class="prompt-label">操作</div>
-            <p class="small"><span class="kbd">Enter</span> 判定 / 次へ<br><span class="kbd">Esc</span> 入力クリア<br><span class="kbd">?</span> ヒント<br>選択モード: <span class="kbd">1</span>〜<span class="kbd">4</span> で選択</p>
           </div>
         </section>
       </aside>
